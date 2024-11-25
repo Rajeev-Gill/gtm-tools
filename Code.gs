@@ -614,8 +614,32 @@ function openPushChangesModal() {
 
 function onOpen() {
   var menu = SpreadsheetApp.getUi().createAddonMenu();
-  menu.addItem('Build documentation', 'openContainerSelector')
-  menu.addItem('Mark changes to Notes', 'openMarkChangesModal')
-  menu.addItem('Push changes to Notes', 'openPushChangesModal')
+  menu.addItem('Enable sheet editing', 'enableSheetEditing');
+  menu.addItem('Sync changes to GTM', 'openSyncChangesModal');
   menu.addToUi();
+}
+
+function enableSheetEditing() {
+  const sheetManager = new SheetManager();
+  const sheets = ['Tags', 'Triggers', 'Variables'];
+  
+  sheets.forEach(sheetName => {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    if (sheet) {
+      sheetManager.setupSheetForEditing(sheet);
+    }
+  });
+}
+
+function openSyncChangesModal() {
+  var html = HtmlService.createTemplateFromFile('SyncChangesModal')
+    .evaluate()
+    .setWidth(400)
+    .setHeight(300);
+  SpreadsheetApp.getUi().showModalDialog(html, 'Sync Changes to GTM');
+}
+
+function syncChangesToGTM(entityType) {
+  const gtmSync = new GTMSync();
+  return gtmSync.syncChanges(entityType);
 }
