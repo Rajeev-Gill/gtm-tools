@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('Styles'); ?>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Sync Changes to GTM</h2>
+      <div class="form-group">
+        <button onclick="syncChanges('Tags')">Sync Tags</button>
+        <button onclick="syncChanges('Triggers')">Sync Triggers</button>
+        <button onclick="syncChanges('Variables')">Sync Variables</button>
+      </div>
+      <div id="status"></div>
+    </div>
+    <script>
+      function syncChanges(entityType) {
+        google.script.run
+          .withSuccessHandler(onSuccess)
+          .withFailureHandler(onFailure)
+          .syncChangesToGTM(entityType);
+      }
+
+      function onSuccess(result) {
+        document.getElementById('status').innerHTML = 'Changes synced successfully';
+      }
+
+      function onFailure(error) {
+        document.getElementById('status').innerHTML = 'Error: ' + error.message;
+      }
+    </script>
+  </body>
+</html>
